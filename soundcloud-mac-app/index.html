@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoundCloud Downloader</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #2b1a13, #0f1115 45%, #08090c);
+      color: #f4f4f5;
+      padding: 28px;
+    }
+    .app { max-width: 860px; margin: 0 auto; }
+    .header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+    .logo {
+      width: 54px; height: 54px; border-radius: 18px; background: #ff5500;
+      display: flex; align-items: center; justify-content: center; box-shadow: 0 16px 40px rgba(255,85,0,.25);
+      font-size: 26px;
+    }
+    h1 { font-size: 28px; letter-spacing: -0.03em; }
+    .subtitle { color: #b7b7bf; margin-top: 3px; font-size: 14px; }
+    .card {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.28);
+      backdrop-filter: blur(16px);
+      margin-bottom: 16px;
+    }
+    label { display: block; color: #d6d6dc; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; font-weight: 700; }
+    input, select {
+      width: 100%;
+      background: rgba(0,0,0,.28);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 14px;
+      outline: none;
+    }
+    input:focus, select:focus { border-color: #ff5500; box-shadow: 0 0 0 4px rgba(255,85,0,.12); }
+    .grid { display: grid; grid-template-columns: 1fr 180px; gap: 14px; margin-top: 14px; }
+    .folder-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 13px 16px;
+      color: #fff;
+      background: rgba(255,255,255,.12);
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .12s, opacity .12s, background .12s;
+    }
+    button:hover { opacity: .9; transform: translateY(-1px); }
+    .primary { width: 100%; margin-top: 16px; background: #ff5500; font-size: 15px; }
+    .secondary { white-space: nowrap; }
+    .options { display: flex; gap: 12px; align-items: center; margin-top: 14px; color: #c8c8cf; font-size: 14px; }
+    .options input { width: auto; }
+    .terminal {
+      background: #050608;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .terminal-top { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: rgba(255,255,255,.06); }
+    .dots span { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 6px; }
+    .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
+    pre {
+      min-height: 250px;
+      max-height: 360px;
+      overflow: auto;
+      padding: 16px;
+      color: #d7fbd0;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+    .small { color: #a9a9b2; font-size: 12px; margin-top: 12px; line-height: 1.5; }
+    .status { color: #b7b7bf; font-size: 13px; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } body { padding: 18px; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="logo">☁️</div>
+      <div>
+        <h1>SoundCloud Downloader</h1>
+        <div class="subtitle">Local Mac app • paste link • download straight to Desktop/usb</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <label for="url">SoundCloud URL</label>
+      <input id="url" placeholder="https://soundcloud.com/artist/sets/playlist-name" />
+
+      <div class="grid">
+        <div>
+          <label style="margin-top:14px" for="folder">Output Folder</label>
+          <div class="folder-row">
+            <input id="folder" />
+            <button class="secondary" id="choose">Choose</button>
+          </div>
+        </div>
+        <div>
+          <label style="margin-top:14px" for="format">Format</label>
+          <select id="format">
+            <option value="mp3">MP3</option>
+            <option value="flac">FLAC</option>
+            <option value="aac">AAC</option>
+            <option value="wav">WAV</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="options">
+        <input type="checkbox" id="playlist" checked />
+        <span>Download playlists/sets into their own folder</span>
+      </div>
+
+      <button class="primary" id="download">Download</button>
+      <div class="small">Requires Homebrew, yt-dlp, and ffmpeg installed on your Mac: <b>brew install yt-dlp ffmpeg</b></div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-top">
+        <div class="dots"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+        <div class="status" id="status">Ready</div>
+        <button class="secondary" id="openFolder">Open Folder</button>
+      </div>
+      <pre id="output">Paste a SoundCloud link and click Download.</pre>
+    </div>
+  </div>
+
+  <script>
+    const defaultFolder = `${location.href ? '' : ''}`;
+    const folderInput = document.getElementById('folder');
+    const output = document.getElementById('output');
+    const status = document.getElementById('status');
+    const downloadBtn = document.getElementById('download');
+
+    folderInput.value = '';
+    output.textContent = 'Default save location: ~/Desktop/usb\n';
+
+    function append(text) {
+      output.textContent += text;
+      output.scrollTop = output.scrollHeight;
+    }
+
+    document.getElementById('choose').addEventListener('click', async () => {
+      const picked = await window.downloaderAPI.chooseFolder();
+      if (picked) folderInput.value = picked;
+    });
+
+    document.getElementById('openFolder').addEventListener('click', async () => {
+      await window.downloaderAPI.openFolder(folderInput.value || null);
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const url = document.getElementById('url').value.trim();
+      const format = document.getElementById('format').value;
+      const playlistMode = document.getElementById('playlist').checked;
+
+      output.textContent = '';
+      status.textContent = 'Downloading...';
+      downloadBtn.disabled = true;
+      downloadBtn.textContent = 'Downloading...';
+
+      window.downloaderAPI.startDownload({
+        url,
+        format,
+        outputFolder: folderInput.value,
+        playlistMode
+      });
+    });
+
+    window.downloaderAPI.onOutput((text) => append(text));
+    window.downloaderAPI.onDone((success) => {
+      status.textContent = success ? 'Complete' : 'Error';
+      downloadBtn.disabled = false;
+      downloadBtn.textContent = 'Download';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "soundcloud-downloader-mac",
+  "version": "1.0.0",
+  "description": "Local Mac app for downloading SoundCloud audio with yt-dlp",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build-mac": "electron-builder --mac"
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "electron-builder": "latest"
+  },
+  "build": {
+    "appId": "com.local.soundclouddownloader",
+    "productName": "SoundCloud Downloader",
+    "mac": {
+      "category": "public.app-category.music",
+      "target": "dmg"
+    }
+  }
+}
