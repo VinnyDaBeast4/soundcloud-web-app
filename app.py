@@ -31,7 +31,8 @@ HTML = """
 
   function updateLiveCount() {
     const num = Math.floor(Math.random() * 18) + 7;
-    document.getElementById("liveCount").innerText = num;
+    const el = document.getElementById("liveCount");
+    if (el) el.innerText = num;
   }
 
   setInterval(updateLiveCount, 4000);
@@ -93,20 +94,6 @@ HTML = """
   .pro-card {
     border:1px solid rgba(255,145,0,.45);
     box-shadow:0 20px 80px rgba(255,85,0,.22);
-    position:relative;
-    overflow:hidden;
-  }
-
-  .pro-card:before {
-    content:"";
-    position:absolute;
-    top:-80px;
-    right:-80px;
-    width:180px;
-    height:180px;
-    background:rgba(255,85,0,.25);
-    border-radius:50%;
-    filter:blur(20px);
   }
 
   .badge {
@@ -292,12 +279,12 @@ HTML = """
       <div class="pro-grid">
         <div class="pro-feature">🎚 BPM Detection</div>
         <div class="pro-feature">🎼 Key Detection</div>
-        <div class="pro-feature">🧠 Smart Rename</div>
-        <div class="pro-feature">📦 Bulk Processing</div>
+        <div class="pro-feature">🧠 Smart File Renaming</div>
+        <div class="pro-feature">📦 Bulk Track Processing</div>
         <div class="pro-feature">🧹 Duplicate Cleaner</div>
         <div class="pro-feature">🗂 Folder Organizer</div>
         <div class="pro-feature">🏷 Metadata Fixer</div>
-        <div class="pro-feature">🚀 DJ-Ready Export</div>
+        <div class="pro-feature">🚀 DJ-Ready Export Format</div>
       </div>
     </div>
 
@@ -332,10 +319,12 @@ HTML = """
   <div class="card full">
     <h2>Why DJs Join Pro</h2>
     <div class="pro-grid">
-      <div class="pro-feature">Save time before sets</div>
-      <div class="pro-feature">Fix messy files faster</div>
-      <div class="pro-feature">Prepare tracks in bulk</div>
-      <div class="pro-feature">Keep libraries clean</div>
+      <div class="pro-feature">⏱ Save hours before sets</div>
+      <div class="pro-feature">🎧 Prep tracks faster</div>
+      <div class="pro-feature">📦 Clean entire batches at once</div>
+      <div class="pro-feature">🧼 Keep your library organized</div>
+      <div class="pro-feature">🔍 Find duplicate files</div>
+      <div class="pro-feature">🎼 Sort by BPM, key, or folder</div>
     </div>
   </div>
 
