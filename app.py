@@ -11,50 +11,104 @@ HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-<title>WaveFetch Music Downloader</title>
+<title>WaveFetch | DJ Music Toolkit</title>
 <style>
   body {
     margin: 0;
-    min-height: 100vh;
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0f0f1a, #1f1235, #ff5500);
+    background: #080812;
     color: white;
+  }
+
+  .hero {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top left, rgba(255,85,0,0.45), transparent 35%),
+      radial-gradient(circle at bottom right, rgba(111,66,255,0.35), transparent 35%),
+      linear-gradient(135deg, #080812, #151528, #1f1235);
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 40px 20px;
   }
-  .card {
-    width: 90%;
-    max-width: 560px;
-    background: rgba(0,0,0,0.58);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 24px;
-    padding: 35px;
+
+  .container {
+    width: 100%;
+    max-width: 1050px;
+  }
+
+  .top {
     text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    margin-bottom: 35px;
+  }
+
+  .logo {
+    font-size: 62px;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: 52px;
+    margin: 0;
+  }
+
+  .tagline {
+    font-size: 18px;
+    color: #d6d6d6;
+    max-width: 720px;
+    margin: 15px auto 0;
+    line-height: 1.6;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-top: 35px;
+  }
+
+  .card {
+    background: rgba(0,0,0,0.58);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 26px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.42);
     backdrop-filter: blur(12px);
   }
-  .deck { font-size: 60px; margin-bottom: 10px; }
-  h1 { margin: 10px 0; font-size: 36px; }
-  p {
-    color: #d8d8d8;
-    font-size: 15px;
-    margin-bottom: 25px;
-    line-height: 1.5;
+
+  .card h2 {
+    margin-top: 0;
+    font-size: 28px;
   }
+
+  .free-label {
+    color: #ff7a2f;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  .pro-label {
+    color: #c7a7ff;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
   textarea {
     width: 100%;
-    height: 135px;
+    height: 150px;
     padding: 15px;
     border-radius: 14px;
     border: none;
     outline: none;
     font-size: 14px;
     box-sizing: border-box;
-    margin-bottom: 16px;
     resize: vertical;
     font-family: Arial, sans-serif;
+    margin: 15px 0;
   }
+
   button {
     width: 100%;
     padding: 15px;
@@ -66,47 +120,129 @@ HTML = """
     font-weight: bold;
     cursor: pointer;
   }
-  button:hover { background: #ff6a1f; }
+
+  button:hover {
+    background: #ff6a1f;
+  }
+
+  .pro-button {
+    background: linear-gradient(135deg, #7b45ff, #ff5500);
+    margin-top: 15px;
+  }
+
   .features {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 22px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 18px;
   }
+
   .feature {
-    flex: 1;
     background: rgba(255,255,255,0.08);
-    padding: 12px;
     border-radius: 14px;
-    font-size: 12px;
-    color: #e7e7e7;
+    padding: 13px;
+    color: #e8e8e8;
+    font-size: 14px;
   }
-  .footer {
-    margin-top: 22px;
-    font-size: 12px;
+
+  .locked {
+    opacity: 0.95;
+  }
+
+  .price {
+    font-size: 34px;
+    font-weight: bold;
+    margin: 15px 0 5px;
+  }
+
+  .small {
     color: #bbbbbb;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .footer {
+    text-align: center;
+    color: #aaa;
+    font-size: 13px;
+    margin-top: 28px;
+  }
+
+  @media (max-width: 800px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+
+    h1 {
+      font-size: 40px;
+    }
   }
 </style>
 </head>
 
 <body>
-  <div class="card">
-    <div class="deck">🎧</div>
-    <h1>WaveFetch</h1>
-    <p>Paste one music link or multiple links below. Downloads come out as Rekordbox / Serato-ready MP3s with title, artist, metadata, and cover art.</p>
+  <section class="hero">
+    <div class="container">
 
-    <textarea id="urls" placeholder="Paste one link per line..."></textarea>
+      <div class="top">
+        <div class="logo">🎧</div>
+        <h1>WaveFetch</h1>
+        <p class="tagline">
+          A DJ music toolkit built for fast downloads, clean metadata, cover art, and future Rekordbox / Serato library prep.
+        </p>
+      </div>
 
-    <button onclick="download()">Download Tracks</button>
+      <div class="cards">
 
-    <div class="features">
-      <div class="feature">🎵 MP3 Format</div>
-      <div class="feature">🖼 Cover Art</div>
-      <div class="feature">🎚 DJ Ready</div>
+        <div class="card">
+          <div class="free-label">FREE VERSION</div>
+          <h2>Download Tracks</h2>
+          <p class="small">
+            Paste one link or multiple links below. Downloads come out as DJ-ready MP3 files with title, artist, metadata, and cover art.
+          </p>
+
+          <textarea id="urls" placeholder="Paste one link per line..."></textarea>
+
+          <button onclick="download()">Download Tracks</button>
+
+          <div class="features">
+            <div class="feature">🎵 MP3 Format</div>
+            <div class="feature">🖼 Embedded Cover Art</div>
+            <div class="feature">🏷 Artist + Title Metadata</div>
+            <div class="feature">🎚 Rekordbox / Serato Friendly</div>
+          </div>
+        </div>
+
+        <div class="card locked">
+          <div class="pro-label">PRO VERSION</div>
+          <h2>DJ Library Prep</h2>
+          <p class="small">
+            Pro is built for DJs who want cleaner files, faster prep, and organized libraries before importing into Rekordbox or Serato.
+          </p>
+
+          <div class="price">$19</div>
+          <p class="small">One-time early access price</p>
+
+          <div class="features">
+            <div class="feature">🔒 BPM Detection</div>
+            <div class="feature">🔒 Key Detection</div>
+            <div class="feature">🔒 Smart File Renaming</div>
+            <div class="feature">🔒 Duplicate Finder</div>
+            <div class="feature">🔒 Batch Folder Organizer</div>
+            <div class="feature">🔒 Rekordbox / Serato Prep Tools</div>
+          </div>
+
+          <button class="pro-button" onclick="proAlert()">Upgrade to Pro</button>
+        </div>
+
+      </div>
+
+      <div class="footer">
+        WaveFetch is designed for personal music organization and DJ library preparation.
+      </div>
+
     </div>
-
-    <div class="footer">Built for clean music downloads and DJ library organization</div>
-  </div>
+  </section>
 
 <script>
 function download(){
@@ -126,7 +262,12 @@ function download(){
   document.body.appendChild(form);
   form.submit();
 }
+
+function proAlert(){
+  alert("WaveFetch Pro is coming soon. This section will include BPM, key detection, smart renaming, duplicate cleanup, and DJ library organization.");
+}
 </script>
+
 </body>
 </html>
 """
@@ -145,39 +286,35 @@ def download():
 
     temp_dir = tempfile.mkdtemp()
 
-    ydl_opts = {
-        "format": "bestaudio/best",
-        "outtmpl": os.path.join(temp_dir, "%(playlist_index|)03d - %(artist|uploader)s - %(title)s.%(ext)s"),
-        "writethumbnail": True,
-        "ignoreerrors": True,
-        "noplaylist": False,
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality": "0",
-            },
-            {
-                "key": "FFmpegMetadata",
-                "add_metadata": True,
-            },
-            {
-                "key": "EmbedThumbnail",
-            },
-        ],
-        "postprocessor_args": [
-            "-id3v2_version", "3"
-        ],
-        "prefer_ffmpeg": True,
-    }
+    for index, url in enumerate(urls, start=1):
+        ydl_opts = {
+            "format": "bestaudio/best",
+            "outtmpl": os.path.join(temp_dir, f"{index:03d} - %(artist|uploader)s - %(title)s.%(ext)s"),
+            "writethumbnail": True,
+            "ignoreerrors": True,
+            "noplaylist": False,
+            "postprocessors": [
+                {
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": "mp3",
+                    "preferredquality": "0",
+                },
+                {
+                    "key": "FFmpegMetadata",
+                    "add_metadata": True,
+                },
+                {
+                    "key": "EmbedThumbnail",
+                },
+            ],
+            "postprocessor_args": [
+                "-id3v2_version", "3"
+            ],
+            "prefer_ffmpeg": True,
+        }
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        for index, url in enumerate(urls, start=1):
-            custom_opts = ydl_opts.copy()
-            custom_opts["outtmpl"] = os.path.join(temp_dir, f"{index:03d} - %(artist|uploader)s - %(title)s.%(ext)s")
-
-            with yt_dlp.YoutubeDL(custom_opts) as single_ydl:
-                single_ydl.download([url])
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
 
     mp3_files = glob.glob(os.path.join(temp_dir, "*.mp3"))
 
