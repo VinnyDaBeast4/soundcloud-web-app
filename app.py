@@ -11,13 +11,115 @@ HTML = """
 <html>
 <head>
 <title>WaveFetch Music Downloader</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f0f1a, #1f1235, #ff5500);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card {
+    width: 90%;
+    max-width: 520px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    padding: 35px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    backdrop-filter: blur(12px);
+  }
+
+  .deck {
+    font-size: 58px;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    margin: 10px 0;
+    font-size: 34px;
+  }
+
+  p {
+    color: #d8d8d8;
+    font-size: 15px;
+    margin-bottom: 25px;
+  }
+
+  input {
+    width: 100%;
+    padding: 15px;
+    border-radius: 14px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    box-sizing: border-box;
+    margin-bottom: 16px;
+  }
+
+  button {
+    width: 100%;
+    padding: 15px;
+    border-radius: 14px;
+    border: none;
+    background: #ff5500;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #ff6a1f;
+  }
+
+  .features {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .feature {
+    flex: 1;
+    background: rgba(255,255,255,0.08);
+    padding: 12px;
+    border-radius: 14px;
+    font-size: 12px;
+    color: #e7e7e7;
+  }
+
+  .footer {
+    margin-top: 22px;
+    font-size: 12px;
+    color: #bbbbbb;
+  }
+</style>
 </head>
-<body style="font-family:sans-serif;text-align:center;padding:40px;">
-<h1>WaveFetch Music Downloader</h1>
-<p>Paste a SoundCloud or YouTube link below.</p>
-<input id="url" placeholder="Paste link here" style="width:400px;padding:10px;">
-<br><br>
-<button onclick="download()">Download MP3</button>
+
+<body>
+  <div class="card">
+    <div class="deck">🎧</div>
+    <h1>WaveFetch</h1>
+    <p>Paste a SoundCloud or YouTube link and download a Rekordbox-ready MP3 with title, artist, metadata, and cover art.</p>
+
+    <input id="url" placeholder="Paste your music link here...">
+
+    <button onclick="download()">Download MP3</button>
+
+    <div class="features">
+      <div class="feature">🎵 MP3 Format</div>
+      <div class="feature">🖼 Cover Art</div>
+      <div class="feature">🎚 DJ Ready</div>
+    </div>
+
+    <div class="footer">Built for fast music downloads and Rekordbox organization</div>
+  </div>
 
 <script>
 function download(){
