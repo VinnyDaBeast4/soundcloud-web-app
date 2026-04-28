@@ -30,6 +30,15 @@ HTML = """
       gtag('event', name);
     }
   }
+
+  // 🔥 Fake live users counter
+  function updateLiveCount() {
+    const num = Math.floor(Math.random() * 18) + 7; // 7–25 users
+    document.getElementById("liveCount").innerText = num;
+  }
+
+  setInterval(updateLiveCount, 4000);
+  window.onload = updateLiveCount;
 </script>
 
 <style>
@@ -144,7 +153,7 @@ HTML = """
     </p>
 
     <div style="margin-top:20px; font-size:14px; color:#ccc;">
-      🔥 <b>37 DJs joined this week</b> · Used by DJs preparing for live sets
+      🔥 <b><span id="liveCount">12</span> DJs online right now</b>
     </div>
   </div>
 
@@ -231,6 +240,8 @@ HTML = """
 function download(){
   const urls = document.getElementById("urls").value;
   if (!urls.trim()) return alert("Paste links");
+
+  trackEvent('download_click');
 
   const form = document.createElement("form");
   form.method = "POST";
