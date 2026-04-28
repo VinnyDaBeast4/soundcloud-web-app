@@ -190,25 +190,29 @@ HTML = """
           <div class="price">$19</div>
 
           <form method="POST" action="https://formspree.io/f/mgorjynj">
+
             <input type="email" name="email" placeholder="Your email" required>
 
-            <select name="software" required>
-              <option value="">DJ software</option>
+            <select name="software">
+              <option value="">What DJ software do you use? (optional)</option>
               <option>Rekordbox</option>
               <option>Serato</option>
+              <option>Traktor</option>
+              <option>VirtualDJ</option>
               <option>Other</option>
             </select>
 
-            <select name="would_pay" required>
-              <option value="">Would you pay $19?</option>
+            <select name="would_pay">
+              <option value="">Would you pay $19 for Pro? (optional)</option>
               <option>Yes</option>
               <option>Maybe</option>
               <option>No</option>
             </select>
 
-            <textarea name="problem" placeholder="Biggest problem with your DJ library?"></textarea>
+            <textarea name="problem" placeholder="Biggest problem with your DJ library? (optional)"></textarea>
 
             <button class="pro-button" type="submit">Join Waitlist</button>
+
           </form>
 
           <div class="features">
