@@ -213,9 +213,10 @@ HTML = """
         Paste one link or multiple links. WaveFetch gives you clean MP3 files with artwork and metadata.
       </p>
 
-      <textarea id="urls" placeholder="Paste one link per line..."></textarea>
-
-      <button onclick="download()">Download Tracks</button>
+      <form method="POST" action="/download" onsubmit="trackEvent('download_click')">
+        <textarea name="urls" placeholder="Paste one link per line..." required></textarea>
+        <button type="submit">Download Tracks</button>
+      </form>
 
       <div class="features">
         <div class="feature">🎵 MP3 Format</div>
@@ -255,7 +256,7 @@ HTML = """
 
         <textarea name="problem" placeholder="Biggest problem with your DJ library? (optional)"></textarea>
 
-        <button class="pro-button">Join Pro Waitlist</button>
+        <button class="pro-button" type="submit">Join Pro Waitlist</button>
       </form>
 
       <div class="pro-grid">
@@ -312,28 +313,6 @@ HTML = """
 
 </div>
 </section>
-
-<script>
-function download(){
-  const urls = document.getElementById("urls").value;
-  if (!urls.trim()) return alert("Paste links first");
-
-  trackEvent('download_click');
-
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = "/download";
-
-  const input = document.createElement("input");
-  input.type = "hidden";
-  input.name = "urls";
-  input.value = urls;
-
-  form.appendChild(input);
-  document.body.appendChild(form);
-  form.submit();
-}
-</script>
 
 </body>
 </html>
