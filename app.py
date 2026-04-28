@@ -4,6 +4,8 @@ import os
 import tempfile
 import glob
 import zipfile
+import csv
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -95,18 +97,21 @@ HTML = """
     letter-spacing: 1px;
   }
 
-  textarea {
+  textarea, input, select {
     width: 100%;
-    height: 150px;
     padding: 15px;
     border-radius: 14px;
     border: none;
     outline: none;
     font-size: 14px;
     box-sizing: border-box;
-    resize: vertical;
     font-family: Arial, sans-serif;
-    margin: 15px 0;
+    margin: 10px 0;
+  }
+
+  textarea {
+    height: 150px;
+    resize: vertical;
   }
 
   button {
@@ -127,7 +132,7 @@ HTML = """
 
   .pro-button {
     background: linear-gradient(135deg, #7b45ff, #ff5500);
-    margin-top: 15px;
+    margin-top: 10px;
   }
 
   .features {
@@ -143,10 +148,6 @@ HTML = """
     padding: 13px;
     color: #e8e8e8;
     font-size: 14px;
-  }
-
-  .locked {
-    opacity: 0.95;
   }
 
   .price {
@@ -213,15 +214,30 @@ HTML = """
           </div>
         </div>
 
-        <div class="card locked">
-          <div class="pro-label">PRO VERSION</div>
-          <h2>DJ Library Prep</h2>
+        <div class="card">
+          <div class="pro-label">PRO WAITLIST</div>
+          <h2>WaveFetch Pro</h2>
           <p class="small">
-            Pro is built for DJs who want cleaner files, faster prep, and organized libraries before importing into Rekordbox or Serato.
+            Join the early access list for BPM detection, key detection, smart renaming, duplicate cleanup, and DJ library tools.
           </p>
 
           <div class="price">$19</div>
-          <p class="small">One-time early access price</p>
+          <p class="small">Planned one-time early access price</p>
+
+          <form method="POST" action="/waitlist">
+            <input type="email" name="email" placeholder="Your email" required>
+
+            <select name="software" required>
+              <option value="">What DJ software do you use?</option>
+              <option value="Rekordbox">Rekordbox</option>
+              <option value="Serato">Serato</option>
+              <option value="Traktor">Traktor</option>
+              <option value="VirtualDJ">VirtualDJ</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <button class="pro-button" type="submit">Join Pro Waitlist</button>
+          </form>
 
           <div class="features">
             <div class="feature">🔒 BPM Detection</div>
@@ -231,8 +247,6 @@ HTML = """
             <div class="feature">🔒 Batch Folder Organizer</div>
             <div class="feature">🔒 Rekordbox / Serato Prep Tools</div>
           </div>
-
-          <button class="pro-button" onclick="proAlert()">Upgrade to Pro</button>
         </div>
 
       </div>
@@ -262,12 +276,56 @@ function download(){
   document.body.appendChild(form);
   form.submit();
 }
-
-function proAlert(){
-  alert("WaveFetch Pro is coming soon. This section will include BPM, key detection, smart renaming, duplicate cleanup, and DJ library organization.");
-}
 </script>
 
+</body>
+</html>
+"""
+
+THANK_YOU_HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+<title>Joined WaveFetch Pro</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #080812, #1f1235, #ff5500);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .box {
+    max-width: 520px;
+    background: rgba(0,0,0,0.6);
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  }
+
+  a {
+    color: white;
+    background: #ff5500;
+    padding: 14px 20px;
+    border-radius: 14px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1>You're on the WaveFetch Pro waitlist 🎧</h1>
+    <p>Thanks for joining. You’ll be first to know when Pro features are ready.</p>
+    <a href="/">Back to WaveFetch</a>
+  </div>
 </body>
 </html>
 """
@@ -275,6 +333,23 @@ function proAlert(){
 @app.route("/")
 def home():
     return render_template_string(HTML)
+
+@app.route("/waitlist", methods=["POST"])
+def waitlist():
+    email = request.form.get("email", "")
+    software = request.form.get("software", "")
+
+    file_exists = os.path.isfile("waitlist.csv")
+
+    with open("waitlist.csv", "a", newline="") as file:
+        writer = csv.writer(file)
+
+        if not file_exists:
+            writer.writerow(["email", "software", "date_joined"])
+
+        writer.writerow([email, software, datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
+
+    return render_template_string(THANK_YOU_HTML)
 
 @app.route("/download", methods=["POST"])
 def download():
