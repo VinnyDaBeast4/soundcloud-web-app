@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, render_template_string
+from flask import Flask, request, send_file, render_template_string, redirect
 import yt_dlp
 import os
 import tempfile
@@ -52,11 +52,8 @@ HTML = """
   }
 
   .container { width:100%; max-width:1120px; margin:auto; }
-
   .top { text-align:center; margin-bottom:35px; }
-
   .logo { font-size:62px; margin-bottom:10px; }
-
   h1 { font-size:54px; margin:0; }
 
   .tagline {
@@ -68,12 +65,7 @@ HTML = """
   }
 
   .subtext { color:#aaa; font-size:14px; margin-top:10px; }
-
-  .live {
-    margin-top:20px;
-    font-size:14px;
-    color:#ccc;
-  }
+  .live { margin-top:20px; font-size:14px; color:#ccc; }
 
   .cards {
     display:grid;
@@ -168,18 +160,8 @@ HTML = """
     min-height:42px;
   }
 
-  .price {
-    font-size:38px;
-    font-weight:bold;
-    margin:5px 0;
-  }
-
-  .small {
-    color:#cfcfcf;
-    font-size:13px;
-    line-height:1.5;
-  }
-
+  .price { font-size:38px; font-weight:bold; margin:5px 0; }
+  .small { color:#cfcfcf; font-size:13px; line-height:1.5; }
   .full { margin-top:25px; }
 
   .comparison {
@@ -412,9 +394,16 @@ def home():
 def success():
     return render_template_string(SUCCESS_HTML)
 
-@app.route("/download", methods=["POST"])
+@app.route("/download", methods=["GET", "POST"])
 def download():
+    if request.method == "GET":
+        return redirect("/")
+
     urls = [u.strip() for u in request.form.get("urls", "").splitlines() if u.strip()]
+
+    if not urls:
+        return redirect("/")
+
     temp_dir = tempfile.mkdtemp()
 
     for i, url in enumerate(urls, start=1):
@@ -433,14 +422,14 @@ def download():
     files = glob.glob(os.path.join(temp_dir, "*.mp3"))
 
     if len(files) == 1:
-        return send_file(files[0], as_attachment=True)
+        return send_file(files[0], as_attachment=True, download_name=os.path.basename(files[0]))
 
     zip_path = os.path.join(temp_dir, "WaveFetch_Tracks.zip")
     with zipfile.ZipFile(zip_path, "w") as z:
         for f in files:
             z.write(f, os.path.basename(f))
 
-    return send_file(zip_path, as_attachment=True)
+    return send_file(zip_path, as_attachment=True, download_name="WaveFetch_Tracks.zip")
 
 if __name__ == "__main__":
     app.run()
